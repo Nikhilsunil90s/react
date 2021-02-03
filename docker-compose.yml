@@ -1,0 +1,96 @@
+version: '3'
+services:
+
+  #MySQL Service
+  austinwilder-db:
+    image: mysql:5.7.22
+    container_name: austinwilder-db
+    restart: unless-stopped
+    tty: true
+    #ports:
+    #  - "9333:3306"
+    environment:
+      MYSQL_DATABASE: austin_wilder
+      MYSQL_ROOT_PASSWORD: owireu23ks@SdC
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./docker/database:/root/sample-db
+    networks:
+      - austinwilder-app-network
+
+
+  austinwilder-api-app:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: austinwilder-api-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /app
+    #command: npm run start-dev
+    #command: pm2 start app --watch
+    #command: pm2 start app --watch
+    #command: pm2 start app --watch
+    command: pm2 start /app/server.js --name app --watch --no-daemon
+    #command: tail -F /dev/null
+    #
+    #not being used
+    #command: node server.js
+    ports:
+      - "9336:5000"
+    # exclude vendor folder
+    volumes:
+      - ./backend/:/app
+      - /app/node_modules
+    networks:
+      - austinwilder-app-network
+
+  austinwilder-web-app:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    container_name: austinwilder-web-app
+    restart: unless-stopped
+    #command: npm run start
+    command: next dev
+    #command: tail -F /dev/null
+    #command: npm run build-dev
+    #command: tail -F /dev/null
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /app
+    ports:
+      - "9335:3000"
+    # exclude vendor folder
+    volumes:
+      - ./frontend/:/app
+      - /app/node_modules
+    networks:
+      - austinwilder-app-network
+
+  austinwilder-phpmyadmin:
+    container_name: austinwilder-phpmyadmin-app
+    image: "phpmyadmin/phpmyadmin"
+    environment:
+        PMA_HOST: austinwilder-db
+    ports:
+      - "9337:80"
+    networks:
+      - austinwilder-app-network
+
+
+#Docker Networks
+networks:
+  austinwilder-app-network:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local

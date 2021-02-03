@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "owireu23ks@SdC",
+    "database": "austin_wilder",
+    "host": "austinwilder-db",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "owireu23ks@SdC",
+    "database": "austin_wilder",
+    "host": "austinwilder-db",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "austinwilder-db",
+    "dialect": "mysql"
+  }
+}

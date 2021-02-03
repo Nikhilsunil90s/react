@@ -1,0 +1,10 @@
+**/package-lock.json
+frontend/node_modules/*
+frontend/dist/*
+backend/node_modules/*
+**/*.sw?
+backend/config/config.json
+frontend/utils/API.tsx
+frontend/public/media/
+backend/public/uploads/
+frontend/core
